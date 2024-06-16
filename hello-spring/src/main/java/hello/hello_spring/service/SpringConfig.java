@@ -1,9 +1,8 @@
 package hello.hello_spring.service;
 
-import hello.hello_spring.repositroy.JdbcMemberRepository;
-import hello.hello_spring.repositroy.JdbcTemplateMemberRepository;
-import hello.hello_spring.repositroy.MemberRepository;
-import hello.hello_spring.repositroy.MemoryMemberRepositroy;
+import hello.hello_spring.aop.TimeTraceAop;
+import hello.hello_spring.repositroy.*;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,22 +12,41 @@ import javax.sql.DataSource;
 @Configuration
 public class SpringConfig {
 
-    private DataSource dataSource;
+//    private DataSource dataSource;
+//
+//    @Autowired
+//    public SpringConfig(DataSource dataSource) {
+//        this.dataSource = dataSource;
+//    }
 
-    @Autowired
-    public SpringConfig(DataSource dataSource) {
-        this.dataSource = dataSource;
+//    private EntityManager em;
+//
+//    @Autowired
+//    public SpringConfig(EntityManager em) {
+//        this.em = em;
+//    }
+
+    private final MemberRepository memberRepository;
+
+    public SpringConfig(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
 
     @Bean
     public MemberService memberService() {
-        return new MemberService(memberRepository());
+        return new MemberService(memberRepository);
     }
 
-    @Bean
-    public MemberRepository memberRepository() {
-        //return new MemoryMemberRepositroy();
-        //return new JdbcMemberRepository(dataSource);
-        return new JdbcTemplateMemberRepository(dataSource);
-    }
+//    @Bean
+//    public TimeTraceAop timeTraceAop(){
+//        return new TimeTraceAop();
+//    }
+
+//    @Bean
+//    public MemberRepository memberRepository() {
+//        //return new MemoryMemberRepositroy();
+//        //return new JdbcMemberRepository(dataSource);
+//        //return new JdbcTemplateMemberRepository(dataSource);
+//        //return new JpaMemberRepository(em);
+//    }
 }
