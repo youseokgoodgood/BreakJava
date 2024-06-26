@@ -5,16 +5,25 @@ import hello.core.member.Member;
 import hello.core.member.MemberService;
 import hello.core.order.Order;
 import hello.core.order.OrderService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class OrderApp {
     public static void main(String[] args) {
-        AppConfig appConfig = new AppConfig();
-
-        MemberService memberService = appConfig.memberService();
-        OrderService orderService = appConfig.orderService();
-
+        //구체화 클래스 사용 선언
         //MemberService memberService = new MemberServiceImpl();
         //OrderService orderService = new OrderServiceImpl();
+
+        //DIP,OCP원칙 수용된 사용선언
+//        AppConfig appConfig = new AppConfig();
+//
+//        MemberService memberService = appConfig.memberService();
+//        OrderService orderService = appConfig.orderService();
+
+        //Spring 컨테이너 사용선언
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+        MemberService memberService = applicationContext.getBean("memberService", MemberService.class);
+        OrderService orderService = applicationContext.getBean("orderService", OrderService.class);
 
         Long memberId = 1L;
         Member member = new Member(memberId, "memberA", Grade.VIP);
