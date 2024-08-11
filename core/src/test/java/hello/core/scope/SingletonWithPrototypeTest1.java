@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 
+import javax.inject.Provider;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SingletonWithPrototypeTest1 {
@@ -43,14 +45,14 @@ public class SingletonWithPrototypeTest1 {
         //private final PrototypeBean prototypeBean; //생성시점에 주입
 
         @Autowired
-        private ObjectProvider<PrototypeBean> prototypeBeanProvider;
+        private Provider<PrototypeBean> prototypeBeanProvider;
 
 //        @Autowired
 //        public ClientBean(PrototypeBean prototypeBean) {
 //            this.prototypeBean = prototypeBean;
 //        }
         public int logic() {
-            PrototypeBean prototypeBean = prototypeBeanProvider.getObject();
+            PrototypeBean prototypeBean = prototypeBeanProvider.get();
             prototypeBean.addCount();
             int count = prototypeBean.getCount();
             return count;

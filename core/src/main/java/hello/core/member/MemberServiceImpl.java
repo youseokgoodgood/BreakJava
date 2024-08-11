@@ -1,14 +1,18 @@
 package hello.core.member;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+@Getter
 @Component
 public class MemberServiceImpl implements MemberService{
+    //테스트 용도
     private final MemberRepository memberRepository;
 
     @Autowired //자동으로 의존성 주입을 도와줌, ex) ac.getBean(MemberRepository.class)
-    public MemberServiceImpl(MemberRepository memberRepository) {
+    public MemberServiceImpl(@Qualifier("memberRepository") MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
@@ -22,8 +26,4 @@ public class MemberServiceImpl implements MemberService{
         return memberRepository.findById(memberId);
     }
 
-    //테스트 용도
-    public MemberRepository getMemberRepository() {
-        return memberRepository;
-    }
 }
