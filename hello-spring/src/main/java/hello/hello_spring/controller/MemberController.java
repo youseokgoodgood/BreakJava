@@ -29,7 +29,7 @@ public class MemberController {
     public String create(MemberForm memberForm) {
         Member member = new Member();
         member.setName(memberForm.getName());
-
+6
         memberService.join(member);
 
         return "redirect:/";
