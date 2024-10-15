@@ -4,6 +4,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
+import java.io.File;
+
 /**
  * packageName    : com.example.seleniumexample
  * fileName       : SeleniumExample
@@ -32,8 +34,40 @@ public class SeleniumExample {
 
         // 페이지 제목 출력
         System.out.println("Page title is: " + driver.getTitle());
-
+        System.out.println("getFilesCnt = " + String.valueOf(getFilesCnt()));
         // 브라우저 종료
         driver.quit();
+    }
+
+    private static int getFilesCnt() {
+        // 확인할 디렉토리 경로 (예: "/path/to/directory")
+        String directoryPath = "/data";  // 원하는 경로로 변경
+
+        // 해당 경로의 디렉토리 객체 생성
+        File dir = new File(directoryPath);
+
+        // 디렉토리가 존재하고 실제 디렉토리인 경우에만 파일 개수 확인
+        if (dir.exists() && dir.isDirectory()) {
+            File[] files = dir.listFiles();
+
+            if (files != null) {
+                int fileCount = 0;
+
+                // 파일만 카운트 (디렉토리는 제외)
+                for (File file : files) {
+                    if (file.isFile()) {
+                        fileCount++;
+                    }
+                }
+
+               return fileCount;
+            } else {
+                System.out.println("디렉토리 정보를 가져오지 못했습니다.");
+                return 0;
+            }
+        } else {
+            System.out.println("지정된 경로가 유효하지 않거나 디렉토리가 아닙니다.");
+            return 0;
+        }
     }
 }
