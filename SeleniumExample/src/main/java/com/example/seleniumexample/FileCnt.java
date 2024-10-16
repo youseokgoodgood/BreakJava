@@ -21,11 +21,12 @@ public class FileCnt {
 
     private static void getFilesCnt() {
         // 확인할 디렉토리 경로 (예: "/path/to/directory")
-        String directoryPath = "D:\\inflearn\\SpringBoot\\강의자료\\스프링 입문 - 코드로 배우는 스프링 부트, 웹 MVC, DB 접근 기술";  // 원하는 경로로 변경
+        String directoryPath = "C:\\Users\\wnsgh\\OneDrive\\사진\\Screenshots";  // 원하는 경로로 변경
 
         // 해당 경로의 디렉토리 객체 생성
         File dir = new File(directoryPath);
-
+        System.out.println("dir.getAbsolutePath() = " + dir.getAbsolutePath());
+        System.out.println("dir.listFiles().length = " + dir.listFiles().length);
         // 디렉토리가 존재하고 실제 디렉토리인 경우에만 파일 개수 확인
         if (dir.exists() && dir.isDirectory()) {
             File[] files = dir.listFiles();
