@@ -14,7 +14,7 @@ import java.util.concurrent.*;
  * 2024-10-17        wnsgh       최초 생성
  */
 public class CompletableFutureExample {
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
+    public static void main(String[] args) throws InterruptedException {
         completableFutureTest();
     }
 
