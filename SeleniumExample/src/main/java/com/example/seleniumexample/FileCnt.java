@@ -16,7 +16,11 @@ import java.io.File;
 public class FileCnt {
 
     public static void main(String[] args) {
-        getFilesCnt();
+        String str = "123";
+
+        System.out.println("str.isBlank() = " + str.isBlank());
+        System.out.println("str.isEmpty() = " + str.isEmpty());
+        //getFilesCnt();
     }
 
     private static void getFilesCnt() {
@@ -25,8 +29,9 @@ public class FileCnt {
 
         // 해당 경로의 디렉토리 객체 생성
         File dir = new File(directoryPath);
-        System.out.println("dir.getAbsolutePath() = " + dir.getAbsolutePath());
-        System.out.println("dir.listFiles().length = " + dir.listFiles().length);
+//        System.out.println("dir.getName() = " + dir.getName()); //파일명
+//        System.out.println("dir.getAbsolutePath() = " + dir.getAbsolutePath()); //파일경로
+//        System.out.println("dir.listFiles().length = " + dir.length()); //파일 용량
         // 디렉토리가 존재하고 실제 디렉토리인 경우에만 파일 개수 확인
         if (dir.exists() && dir.isDirectory()) {
             File[] files = dir.listFiles();
@@ -37,6 +42,9 @@ public class FileCnt {
                 // 파일만 카운트 (디렉토리는 제외)
                 for (File file : files) {
                     if (file.isFile()) {
+                        System.out.println("dir.getName() = " + file.getName()); //파일명
+                        System.out.println("dir.getAbsolutePath() = " + file.getAbsolutePath()); //파일경로
+                        System.out.println("dir.listFiles().length = " + file.length()); //파일 용량
                         fileCount++;
                     }
                 }
