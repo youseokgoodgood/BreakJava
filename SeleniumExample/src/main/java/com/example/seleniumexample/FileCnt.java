@@ -48,7 +48,7 @@ public class FileCnt {
         String directoryPath = "C:\\Users\\wnsgh\\OneDrive\\사진\\Screenshots\\";  // 원하는 경로로 변경
 
         try {
-            Path path = Paths.get(directoryPath,formattedDate,"2024");
+            Path path = Paths.get(directoryPath,formattedDate,"2022","2");
 
             // 해당 경로의 디렉토리 객체 생성
             dir = new File(String.valueOf(path));
