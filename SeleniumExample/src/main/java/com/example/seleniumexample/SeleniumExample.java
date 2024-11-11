@@ -1,6 +1,7 @@
 package com.example.seleniumexample;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
@@ -20,11 +21,14 @@ import java.io.File;
 public class SeleniumExample {
     public static void SeleniumStart() {
         // Geckodriver 경로 설정 (시스템 경로에 있을 경우 생략 가능)
-        System.setProperty("webdriver.gecko.driver", "/usr/local/bin/geckodriver");
+        //System.setProperty("webdriver.gecko.driver", "/usr/local/bin/geckodriver");
+        System.setProperty("webdriver.gecko.driver", "D:\\inflearn\\SpringBoot\\Project\\BreakJava\\SeleniumExample\\geckodriver.exe");
 
         // Firefox 옵션 설정 (headless 모드)
         FirefoxOptions options = new FirefoxOptions();
         options.addArguments("-headless");  // GUI 없는 서버에서 실행 시 필요
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
 
         // 파이어폭스 드라이버 생성
         WebDriver driver = new FirefoxDriver(options);
@@ -34,7 +38,7 @@ public class SeleniumExample {
 
         // 페이지 제목 출력
         System.out.println("Page title is: " + driver.getTitle());
-        System.out.println("getFilesCnt = " + String.valueOf(getFilesCnt()));
+        //System.out.println("getFilesCnt = " + String.valueOf(getFilesCnt()));
         // 브라우저 종료
         driver.quit();
     }
