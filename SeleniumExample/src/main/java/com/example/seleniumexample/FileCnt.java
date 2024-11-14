@@ -5,10 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Stream;
 
 /**
  * packageName    : io
@@ -69,7 +68,7 @@ public class FileCnt {
 
                     // 파일만 카운트 (디렉토리는 제외)
                     for (File file : files) {
-                        if (file.isFile()) {
+                        if (file.isFile() && !file.getName().contains("txt")) {
                             System.out.println("dir.getName() = " + file.getName()); //파일명
                             System.out.println("dir.getAbsolutePath() = " + file.getAbsolutePath()); //파일경로
                             System.out.println("dir.listFiles().length = " + file.length()); //파일 용량
@@ -78,6 +77,10 @@ public class FileCnt {
                     }
 
                     System.out.println("디렉토리 내 파일 개수: " + fileCount);
+
+
+                    System.out.println("getCnt: "+getCnt(path));
+
                 } else {
                     System.out.println("디렉토리 정보를 가져오지 못했습니다.");
                 }
@@ -87,5 +90,18 @@ public class FileCnt {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static long getCnt(Path dir) {
+        try(Stream<Path> files = Files.list(dir)){
+            long count = files.filter(Files::isRegularFile).
+                    filter(file -> !file.toString().endsWith("txt")).count();
+
+            System.out.println(count);
+            return count;
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
     }
 }
