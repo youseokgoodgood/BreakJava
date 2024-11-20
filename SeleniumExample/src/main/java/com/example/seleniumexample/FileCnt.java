@@ -44,9 +44,12 @@ public class FileCnt {
         File dir = null;
         String formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         // 확인할 디렉토리 경로 (예: "/path/to/directory")
-        String directoryPath = "C:\\Users\\wnsgh\\OneDrive\\사진\\Screenshots\\";  // 원하는 경로로 변경
+        String directoryPath = "C:\\Users\\wnsgh\\OneDrive\\사진\\Screenshots\\4717041029107460001_lx.png";  // 원하는 경로로 변경
 
         try {
+            String[] s = directoryPath.split("", 0);
+            System.out.println("s = " + s.toString());
+
             Path path = Paths.get(directoryPath,formattedDate,"2022","2");
 
             // 해당 경로의 디렉토리 객체 생성
