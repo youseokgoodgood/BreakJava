@@ -1,13 +1,28 @@
 package com.example.seleniumexample;
 
-import java.io.File;
-import java.io.IOException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import javax.sql.DataSource;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
+
 
 /**
  * packageName    : io
@@ -21,6 +36,7 @@ import java.util.stream.Stream;
  * 2024-10-15        wnsgh       최초 생성
  */
 public class FileCnt {
+    private static final Logger logger = Logger.getLogger("MyLog");
 
     public static void main(String[] args) {
 
@@ -34,7 +50,8 @@ public class FileCnt {
 //
 //            // 결과 출력
 //            System.out.println("Formatted Date: " + formattedDate);
-            getFilesCnt();
+            //getFilesCnt();
+            insertDataFromJson();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -106,5 +123,84 @@ public class FileCnt {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private static DataSource dataSource(){
+        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+        Properties properties = new Properties();
+
+        try(InputStream inputStream = FileCnt.class.getClassLoader().getResourceAsStream("application.properties")) {
+            if(inputStream == null){
+                return driverManagerDataSource;
+            }
+            properties.load(inputStream);
+
+            driverManagerDataSource.setDriverClassName(properties.getProperty("Globals.DriverClassName"));
+            driverManagerDataSource.setUrl(properties.getProperty("Globals.Url"));
+            driverManagerDataSource.setUsername(properties.getProperty("Globals.UserName"));
+            driverManagerDataSource.setPassword(properties.getProperty("Globals.Password"));
+        }catch (RuntimeException | IOException e){
+            System.out.println("e.getMessage() = " + e.getMessage());
+        }
+        return driverManagerDataSource;
+    }
+
+
+    public static void insertDataFromJson() {
+        String insertSql = "INSERT INTO \"GOLD_PL\".m_sv_frln_shape_anls_rslt_test\n" +
+                "(anls_ymd, imgr_idntf_artcl_cd, biz_yr, agrclt_bizcd, biz_aply_sno, biz_aply_frln_sno, nplow_area, actl_plow_area, file_path_nm, photo_file_nm, anls_rslt_cn, rmrk_cn, str_dt, str_userid)\n" +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        String jsonFilePath = "D:\\농정원\\본사업\\이행점검_GEO\\수집기\\분석\\2.1.3.4 Deeplab_3region_result_241011_v0.1.json";
+        Timestamp localDate = getLocalDate();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            // JSON 파일을 Java 객체로 매핑
+            Map<String, List<Map<String, Object>>> jsonData = objectMapper.readValue(
+                    new File(jsonFilePath),
+                    new TypeReference<Map<String, List<Map<String, Object>>>>() {}
+            );
+
+            // JSON 루트 키 접근
+            String rootKey = "2.1.3.4 Deeplab_3region_result_";
+            List<Map<String, Object>> records = jsonData.get(rootKey);
+
+            /**/
+            for (Map<String, Object> record : records) {
+                String anlsYmd = record.getOrDefault("ANLS_YMD", "2024-11-24").toString();
+                System.out.println(anlsYmd);
+                jdbcTemplate.update(insertSql,
+                        record.getOrDefault("ANLS_YMD", "2024-11-24").toString(), // 정수형 변환
+                        record.getOrDefault("IMGR_IDNTF_ARTCL_CD", "N/A").toString(), // 문자열 처리
+                        record.getOrDefault("BIZ_YR", "0").toString(),
+                        record.getOrDefault("AGRCLT_BIZCD", "N/A").toString(),
+                        record.getOrDefault("BIZ_APLY_SNO", 0), // NULL 처리
+                        record.getOrDefault("BIZ_APLY_FRLN_SNO", 0), // NULL 처리
+                        record.getOrDefault("NPLOW_AREA", "0.0").toString(), // 부동소수점
+                        record.getOrDefault("ACTL_PLOW_AREA", "0.0").toString(),
+                        record.getOrDefault("FILE_PATH_NM", "./default/path/").toString(),
+                        record.getOrDefault("PHOTO_FILE_NM", "default.png").toString(),
+                        record.getOrDefault("ANLS_RSLT_CN", "0.0").toString(),
+                        record.getOrDefault("RMRK_CN", "").toString(), // 비고 컬럼 기본값
+                        "2024-11-24", // 적재일시
+                        "GP" // 적재사용자ID
+                );
+            }
+
+            System.out.println("Data inserted successfully.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error reading or parsing JSON file: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Database operation failed: " + e.getMessage());
+        }
+    }
+
+    private static Timestamp getLocalDate() {
+        return Timestamp.valueOf(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 }
