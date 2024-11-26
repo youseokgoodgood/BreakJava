@@ -51,7 +51,13 @@ public class FileCnt {
 //            // 결과 출력
 //            System.out.println("Formatted Date: " + formattedDate);
             //getFilesCnt();
-            insertDataFromJson();
+            //insertDataFromJson();
+
+            String testStr = "5011025022102760018_overlay_crop.png";
+
+            String[] s = testStr.split("_", 0);
+            System.out.println("s = " + s);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
