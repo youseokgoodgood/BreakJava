@@ -33,6 +33,8 @@ public class SeleniumExample {
         // 파이어폭스 드라이버 생성
         WebDriver driver = new FirefoxDriver(options);
 
+        System.out.println("driver = " + driver);
+
         // 웹사이트로 이동
         driver.get("https://finance.naver.com/world/sise.naver?symbol=DJI@DJI");
 
