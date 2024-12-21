@@ -50,7 +50,7 @@ class ItemRepositoryTest {
         //when
         List<Item> result = itemRepository.findAll();
 
-        //than
+        //than(
         assertThat(result.size()).isEqualTo(2);
         assertThat(result).contains(item1, item2);
     }
