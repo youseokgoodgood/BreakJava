@@ -1,8 +1,12 @@
-package com.example.seleniumexample;
+package com.example.itemservice.web.basic;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -18,15 +22,21 @@ import java.io.IOException;
  * -----------------------------------------------------------
  * 2025-01-07        SYS       최초 생성
  */
-public class ReadJson {
-    public static void main(String[] args) throws FileNotFoundException {
-        // JSON 파일 경로
+
+@RestController
+@RequestMapping("/api")
+public class TesController {
+
+    @GetMapping("/json-array")
+    public ResponseEntity<String> getJsonArray() throws FileNotFoundException {
+        System.out.println("123");
         String filePath = "C:\\Users\\wnsgh\\Downloads\\sample.json";
 
         // JSON 파일 읽기
         JSONArray jsonData = readJsonFileAndConvertToJson(filePath);
 
-        System.out.println(jsonData);
+        // 파일 읽기 및 JSON 배열 반환
+        return ResponseEntity.ok(jsonData.toString());
     }
 
     private static JSONArray readJsonFileAndConvertToJson(String filePath) throws FileNotFoundException {
@@ -67,5 +77,4 @@ public class ReadJson {
             throw new RuntimeException(e);
         }
     }
-
 }
