@@ -6,27 +6,24 @@ import java.io.InputStreamReader;
 
 /**
  * packageName    : iter
- * fileName       : Hap
+ * fileName       : Nbyte
  * author         : wnsgh
- * date           : 2025-05-06
+ * date           : 2025-05-08
  * description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2025-05-06        wnsgh       최초 생성
+ * 2025-05-08        wnsgh       최초 생성
  */
-public class Hap {
+public class N_byte {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        StringBuilder s = new StringBuilder("long");
 
-        int n = 3;
-        int sum = 0;
-        long x = Long.parseLong("1");
-
-        for(int i = 1; i <= n; i++) {
-            sum += i;
+        for(int i = 1; i < n/4; i++) {
+            s.append(" long");
         }
-
-        System.out.println(sum);
+        System.out.println(s.append(" int"));
     }
 }
