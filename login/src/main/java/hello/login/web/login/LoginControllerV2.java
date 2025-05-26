@@ -2,6 +2,7 @@ package hello.login.web.login;
 
 import hello.login.domain.login.LoginService;
 import hello.login.domain.member.Member;
+import hello.login.web.session.SessionManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -28,16 +29,17 @@ import javax.validation.Valid;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-public class LoginController_origin {
+public class LoginControllerV2 {
 
     private final LoginService loginService;
+    private final SessionManager sessionManager;
 
     //@GetMapping("/login")
     public String loginForm(@ModelAttribute("loginForm") LoginForm loginForm) {
         return "login/loginForm";
     }
 
-    //@PostMapping("/login")
+   // @PostMapping("/login")
     public String login(@Valid @ModelAttribute("loginForm") LoginForm loginForm, BindingResult bindingResult, HttpServletResponse response) {
         if(bindingResult.hasErrors()) {
             return "login/loginForm";
@@ -52,24 +54,23 @@ public class LoginController_origin {
 
         //로그인 성공
 
-        //쿠키에 시간 정보를 주지 않으면 세션 쿠키(브라우저 종료시 모두 종료)
-        Cookie loginMemberId = new Cookie("loginMemberId", String.valueOf(loginMember.getId()));
-        response.addCookie(loginMemberId);
+        //세션 관리자를 통하여 세션을 생성하고, 회원 데이터를 보관
+        sessionManager.createSession(loginMember, response);
+        log.info("loginMember={}", loginMember);
+        log.info("sessionId={}", response.getHeader("Set-Cookie"));
 
+
+        //세션 생성 후 로그인 성공시, 로그인한 회원의 정보를 보관하여 로그인 성공 후 메인 페이지로 이동
         return "redirect:/";
 
     }
 
     //@PostMapping("/logout")
-    public String logout(HttpServletResponse response) {
-        expireCookie(response);
+    public String logout(HttpServletRequest request) {
+        //세션 관리자를 통하여 세션을 만료
+        sessionManager.expireSession(request);
 
+        //세션 만료 후 로그아웃 성공시, 로그아웃 후 메인 페이지로 이동
         return "redirect:/";
-    }
-
-    private static void expireCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie("loginMemberId", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
     }
 }

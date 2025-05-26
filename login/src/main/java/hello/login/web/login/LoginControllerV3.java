@@ -2,6 +2,7 @@ package hello.login.web.login;
 
 import hello.login.domain.login.LoginService;
 import hello.login.domain.member.Member;
+import hello.login.web.session.SessionConst;
 import hello.login.web.session.SessionManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 /**
@@ -30,7 +31,7 @@ import javax.validation.Valid;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-public class LoginController {
+public class LoginControllerV3 {
 
     private final LoginService loginService;
     private final SessionManager sessionManager;
@@ -41,7 +42,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute("loginForm") LoginForm loginForm, BindingResult bindingResult, HttpServletResponse response) {
+    public String login(@Valid @ModelAttribute("loginForm") LoginForm loginForm, BindingResult bindingResult, HttpServletResponse response, HttpServletRequest request) {
         if(bindingResult.hasErrors()) {
             return "login/loginForm";
         }
@@ -53,10 +54,23 @@ public class LoginController {
             return "login/loginForm";
         }
 
-        //로그인 성공
+        //로그인 성공 처리
+        //세션이 있으면 있는 세션 반환, 없으면 신규 세션을 생성
+        /*
+        * request.getSession(true);
+        *  -> 세션이 있으면 기존 세션을 반환
+        *  -> 세션이 없으면 새로운 세션을 생성해서 반환
+        * 
+        * request.getSession(false);
+        *  -> 세션이 있으면 기존 세션을 반환한다
+        *  -> 세션이 없으면 새로운 세션을 생성하지 않으며, null을 반환
+        * */
+        HttpSession session = request.getSession();
+        //세션에 로그인 회원 정보 보관
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
         //세션 관리자를 통하여 세션을 생성하고, 회원 데이터를 보관
-        sessionManager.createSession(loginMember, response);
+
         log.info("loginMember={}", loginMember);
         log.info("sessionId={}", response.getHeader("Set-Cookie"));
 
@@ -68,10 +82,13 @@ public class LoginController {
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
-        //세션 관리자를 통하여 세션을 만료
-        sessionManager.expireSession(request);
+        HttpSession session = request.getSession(false);
 
-        //세션 만료 후 로그아웃 성공시, 로그아웃 후 메인 페이지로 이동
+        if(session != null) {
+            session.invalidate(); //세션 초기화
+        }
+
+
         return "redirect:/";
     }
 }
