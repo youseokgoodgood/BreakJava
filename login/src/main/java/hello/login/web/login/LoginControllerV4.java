@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +22,7 @@ import javax.validation.Valid;
  * packageName: hello.login.web.login
  * fileName: LoginController
  * author: 심유석
- * date: 2025-05-24
+ * date: 2025-06-03
  * description:
  * ===========================================================
  * DATE AUTHOR NOTE
@@ -31,18 +32,20 @@ import javax.validation.Valid;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-public class LoginControllerV3 {
+public class LoginControllerV4 {
 
     private final LoginService loginService;
     private final SessionManager sessionManager;
 
-    //@GetMapping("/login")
+    @GetMapping("/login")
     public String loginForm(@ModelAttribute("loginForm") LoginForm loginForm) {
         return "login/loginForm";
     }
 
-    //@PostMapping("/login")
-    public String login(@Valid @ModelAttribute("loginForm") LoginForm loginForm, BindingResult bindingResult, HttpServletResponse response, HttpServletRequest request) {
+    @PostMapping("/login")
+    public String login(@Valid @ModelAttribute("loginForm") LoginForm loginForm, BindingResult bindingResult, HttpServletResponse response,
+                        @RequestParam(name = "redirectURL", defaultValue = "/") String redirectUrl,
+                        HttpServletRequest request) {
         if(bindingResult.hasErrors()) {
             return "login/loginForm";
         }
@@ -73,14 +76,15 @@ public class LoginControllerV3 {
 
         log.info("loginMember={}", loginMember);
         log.info("sessionId={}", response.getHeader("Set-Cookie"));
+        log.info("redirectUrl={}", redirectUrl);
 
 
         //세션 생성 후 로그인 성공시, 로그인한 회원의 정보를 보관하여 로그인 성공 후 메인 페이지로 이동
-        return "redirect:/";
+        return "redirect:" + redirectUrl;
 
     }
 
-    //@PostMapping("/logout")
+    @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
