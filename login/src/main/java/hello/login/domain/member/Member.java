@@ -2,7 +2,7 @@ package hello.login.domain.member;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 /**
  * packageName    : hello.login.domain.member
