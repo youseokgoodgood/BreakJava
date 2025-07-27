@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
  * 2025-07-27        sim-yuoseok       최초 생성
  */
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "hello.exception.api")
 
 public class ExControllerAdvice {
 
