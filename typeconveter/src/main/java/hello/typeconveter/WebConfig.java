@@ -4,6 +4,7 @@ import hello.typeconveter.converter.IntegerToStringConverter;
 import hello.typeconveter.converter.IpPortToStringConverter;
 import hello.typeconveter.converter.StringToIntergerConverter;
 import hello.typeconveter.converter.StringToPortConverter;
+import hello.typeconveter.formatter.MyNumberFormatter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,9 +26,13 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new StringToIntergerConverter());
-        registry.addConverter(new IntegerToStringConverter());
+        //우선처리를 위해 주석처리
+        //registry.addConverter(new StringToIntergerConverter());
+        //registry.addConverter(new IntegerToStringConverter());
         registry.addConverter(new StringToPortConverter());
         registry.addConverter(new IpPortToStringConverter());
+
+        //추가
+        registry.addFormatter(new MyNumberFormatter());
     }
 }
